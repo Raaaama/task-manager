@@ -25,6 +25,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "assets/fonts/geometria_bold.otf",
+            "assets/fonts/geometria_medium.otf",
+            "assets/fonts/geometria_light.otf"
+          ]
+        }
+      ]
+    ]
   }
 }
