@@ -4,7 +4,7 @@ simple task management tool. add, edit, and delete tasks with ease. mark tasks a
 
 ## demo
 
-![](https://github.com/Raaaama/task-manager/blob/main/ezgif-3-a7a54e4aef.gif)
+![](https://github.com/Raaaama/task-manager/blob/main/ezgif-3-bce8b1a268.gif)
 
 ## tech stack
 
