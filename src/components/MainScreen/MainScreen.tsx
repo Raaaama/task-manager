@@ -5,25 +5,33 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   RefreshControl,
   Text,
   Platform,
 } from "react-native";
 import { styles } from "./MainScreenStyles";
 import LogInModal from "../LogInModal/LogInModal";
+import TaskList from "./TaskList/TaskList";
 
 import { useCallback } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import Toolbar from "./Toolbar/Toolbar";
+import TaskModal from "../AddTaskModal/TaskModal";
+import { useAppSelector } from "../../redux/hooks";
+import { useLazyGetUserTasksQuery } from "../../redux/apiSlice";
+import { ITask } from "../../Interfaces/ITask";
 
 SplashScreen.preventAutoHideAsync();
 
 const MainScreen = () => {
-  const [logInModalVisible, setLogInModalVisible] = useState(true);
-  const [token, setToken] = useState();
+  const { token, allTasksFilter } = useAppSelector((state) => state.userSlice);
+
   const [username, setUsername] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [count, setCount] = useState(0);
+
+  const [getTasksQuery, { data: tasks, isFetching }] =
+    useLazyGetUserTasksQuery();
 
   const [fontsLoaded, fontError] = useFonts({
     "Geometria-Medium": require("../../../assets/fonts/geometria_medium.otf"),
@@ -37,18 +45,30 @@ const MainScreen = () => {
     }
   }, [fontsLoaded, fontError]);
 
+  const handleRefresh = () => {
+    getTasksQuery(token);
+  };
+
+  useEffect(() => {
+    handleRefresh();
+  }, [token]);
+
+  useEffect(() => {
+    if (tasks) {
+      let a = tasks.reduce(function (sum: number, e: ITask) {
+        if (allTasksFilter) {
+          return !e.completed ? sum + 1 : sum;
+        } else {
+          return !e.completed && e.important ? sum + 1 : sum;
+        }
+      }, 0);
+      setCount(a);
+    }
+  }, [tasks, allTasksFilter]);
+
   if (!fontsLoaded && !fontError) {
     return null;
   }
-
-  const loginModalProps = {
-    logInModalVisible,
-    setLogInModalVisible,
-    token,
-    setToken,
-    username,
-    setUsername,
-  };
 
   return (
     <SafeAreaView onLayout={onLayoutRootView}>
@@ -57,31 +77,24 @@ const MainScreen = () => {
       >
         <ScrollView
           keyboardShouldPersistTaps="always"
+          style={{ height: "100%" }}
           refreshControl={
             <RefreshControl
-              refreshing={false}
-              // onRefresh={onRefresh}
-              // colors={[YELLOW]}
-              // tintColor={YELLOW}
+              refreshing={isFetching}
+              onRefresh={handleRefresh}
+              colors={["#000"]}
+              tintColor={"#000"}
             />
           }
         >
           <StatusBar />
-          <LogInModal
-            visible={logInModalVisible}
-            setLogInModalVisible={setLogInModalVisible}
-            token={token}
-            setToken={setToken}
-            username={username}
-            setUsername={setUsername}
-          />
+          <LogInModal username={username} setUsername={setUsername} />
+          <TaskModal handleRefresh={handleRefresh} />
           <View style={styles.container}>
             <Text style={styles.greeting}>{`hello, ${username}`}</Text>
-            <View>
-              {/* <View style={[styles.dot, {color: }]}>
-
-              </View> */}
-            </View>
+            <Text style={styles.stat}>{`${count} task(s) to do`}</Text>
+            <Toolbar />
+            <TaskList tasks={tasks} handleRefresh={handleRefresh} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -9,10 +9,13 @@ const Input = (props: any) => {
     placeholder,
     value,
     editable,
+    multiline = false,
+    height = 50,
+    padding = 0,
   } = props;
   return (
     <TextInput
-      style={styles.input}
+      style={[styles.input, { height: height, padding: padding }]}
       inputMode={inputMode}
       cursorColor={"#000"}
       secureTextEntry={secureTextEntry}
@@ -20,6 +23,7 @@ const Input = (props: any) => {
       placeholder={placeholder}
       value={value}
       editable={editable}
+      multiline={multiline}
     />
   );
 };

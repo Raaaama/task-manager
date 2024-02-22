@@ -1,15 +1,12 @@
 import { StyleSheet } from "react-native";
-import commonStyles from "../../commonStyles";
+import commonStyles from "../../styles/commonStyles";
 
 export const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#000AFF",
-    width: "100%",
-    height: 50,
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 40,
-    marginVertical: 10
   },
   buttonText: {
     fontFamily: commonStyles.Geometria700,
