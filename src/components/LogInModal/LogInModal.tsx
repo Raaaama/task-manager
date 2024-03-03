@@ -58,7 +58,6 @@ const LogInModal: React.FC<LogInModalProps> = (props) => {
       .then((r) => {
         dispatch(setToken(r.data.token));
         dispatch(setLogInModalVisible(false));
-        getUserTasks(r.data.token);
       })
       .catch((e) => {
         console.log(e);
@@ -74,7 +73,6 @@ const LogInModal: React.FC<LogInModalProps> = (props) => {
       .then((r) => {
         setToken(r.data.token);
         setLogInModalVisible(false);
-        getUserTasks(r.data.token);
       })
       .catch((e) => {
         console.log(e);
@@ -97,23 +95,6 @@ const LogInModal: React.FC<LogInModalProps> = (props) => {
     setUsernameEditable(true);
     setTitleText("log in");
     setButtonText("continue");
-  };
-
-  const getUserTasks = (token: string) => {
-    const requestBody = {
-      username: username,
-    };
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    axios
-      .post("http://192.168.1.69:3000/tasks/get-user-tasks", requestBody, {
-        headers: headers,
-      })
-      .catch((error) => {
-        console.error("Error fetching tasks:", error);
-      });
   };
 
   return (
